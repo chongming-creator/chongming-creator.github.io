@@ -6,18 +6,21 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>Archives | ChongMing&#39;s blog</title>
+  <title>大数据学习-hive | ChongMing&#39;s blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="从零开始的java之旅">
-<meta property="og:type" content="website">
-<meta property="og:title" content="ChongMing&#39;s blog">
-<meta property="og:url" content="http://yoursite.com/archives/index.html">
+  <meta name="description" content="分布式和伪分布式分布式模式下，集群启动多个服务，JobTracker管理job，NameNode管理HDFS，TaskTracker管理每个工作节点上执行的job task，DataNode管理每个节点上存放的分布式文件系统中的文件数据块 下图展示了典型的分布式集群配置，其实伪分布式也差不多相同，它实际上是一个单节点的集群 可以将*.domain.pvt作为集群内外网DNS命名规范 用户可配置的一">
+<meta property="og:type" content="article">
+<meta property="og:title" content="大数据学习-hive">
+<meta property="og:url" content="http://yoursite.com/2019/10/07/hive-操作表/index.html">
 <meta property="og:site_name" content="ChongMing&#39;s blog">
-<meta property="og:description" content="从零开始的java之旅">
+<meta property="og:description" content="分布式和伪分布式分布式模式下，集群启动多个服务，JobTracker管理job，NameNode管理HDFS，TaskTracker管理每个工作节点上执行的job task，DataNode管理每个节点上存放的分布式文件系统中的文件数据块 下图展示了典型的分布式集群配置，其实伪分布式也差不多相同，它实际上是一个单节点的集群 可以将*.domain.pvt作为集群内外网DNS命名规范 用户可配置的一">
 <meta property="og:locale" content="en">
+<meta property="og:image" content="https://i.loli.net/2019/11/03/RxcefhXHIwPGbmk.png">
+<meta property="og:updated_time" content="2019-11-03T13:44:16.602Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="ChongMing&#39;s blog">
-<meta name="twitter:description" content="从零开始的java之旅">
+<meta name="twitter:title" content="大数据学习-hive">
+<meta name="twitter:description" content="分布式和伪分布式分布式模式下，集群启动多个服务，JobTracker管理job，NameNode管理HDFS，TaskTracker管理每个工作节点上执行的job task，DataNode管理每个节点上存放的分布式文件系统中的文件数据块 下图展示了典型的分布式集群配置，其实伪分布式也差不多相同，它实际上是一个单节点的集群 可以将*.domain.pvt作为集群内外网DNS命名规范 用户可配置的一">
+<meta name="twitter:image" content="https://i.loli.net/2019/11/03/RxcefhXHIwPGbmk.png">
   
     <link rel="alternative" href="/atom.xml" title="ChongMing&#39;s blog" type="application/atom+xml">
   
@@ -153,295 +156,309 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
+            <article id="post-hive-操作表" class="article article-type-post " itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
   
+    <h1 class="article-title" itemprop="name">
+      大数据学习-hive
+    </h1>
   
-    
-    
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2019" class="archive-year">2019</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/10/07/hive-操作表/" class="archive-article-date">
+
+        
+        <a href="/2019/10/07/hive-操作表/" class="archive-article-date">
   	<time datetime="2019-10-07T08:19:45.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-10-07</time>
 </a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/10/07/hive-操作表/">大数据学习-hive</a>
-    </h1>
-  
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="分布式和伪分布式"><a href="#分布式和伪分布式" class="headerlink" title="分布式和伪分布式"></a>分布式和伪分布式</h1><p>分布式模式下，集群启动多个服务，JobTracker管理job，NameNode管理HDFS，TaskTracker管理每个工作节点上执行的job task，DataNode管理每个节点上存放的分布式文件系统中的文件数据块</p>
+<p>下图展示了典型的分布式集群配置，其实伪分布式也差不多相同，它实际上是一个单节点的集群</p>
+<p>可以将*.domain.pvt作为集群内外网DNS命名规范</p>
+<p>用户可配置的一个属性是存储表的顶级目录，由属性hive.metastore.warehouse.dir指定，在Apache Hadoop和MapR分钟中默认是/user/hive/warehouse，当Hadoop配置的是分布式或伪分布式模式时，这个路径被认为是分布式文件系统中的路径</p>
+<p><img src="https://i.loli.net/2019/11/03/RxcefhXHIwPGbmk.png" alt="WX20191103-201751.png"></p>
+<h1 id="数据类型和文件格式"><a href="#数据类型和文件格式" class="headerlink" title="数据类型和文件格式"></a>数据类型和文件格式</h1><h2 id="基本数据类型"><a href="#基本数据类型" class="headerlink" title="基本数据类型"></a>基本数据类型</h2><table>
+<thead>
+<tr>
+<th>数据类型</th>
+<th>长度</th>
+<th>示例</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>TINYINT</td>
+<td>1byte有符号整数</td>
+<td>20</td>
+</tr>
+<tr>
+<td>SMALINT</td>
+<td>2byte有符号整数</td>
+<td>20</td>
+</tr>
+<tr>
+<td>INT</td>
+<td>4byte有符号整数</td>
+<td>20</td>
+</tr>
+<tr>
+<td>BIGINT</td>
+<td>8byte有符号整数</td>
+<td>20</td>
+</tr>
+<tr>
+<td>BOOLEAN</td>
+<td>布尔类型</td>
+<td>true</td>
+</tr>
+<tr>
+<td>FLOAT</td>
+<td>单精度浮点数</td>
+<td>3.14</td>
+</tr>
+<tr>
+<td>DOUBLE</td>
+<td>双精度浮点数</td>
+<td>3.14</td>
+</tr>
+<tr>
+<td>STRING</td>
+<td>字符序列，可指定字符集，使用单引号/双引号</td>
+<td>“hello world”或’hello world’</td>
+</tr>
+<tr>
+<td>TIMESTAMP</td>
+<td>整数，浮点数或字符串</td>
+<td>1327882394（秒）；1327882394.123456789（秒.纳秒）；’2019-9-30 12:00:00.123456789’</td>
+</tr>
+<tr>
+<td>BINARY</td>
+<td>字节数组</td>
+<td></td>
+</tr>
+</tbody></table>
+<ol>
+<li>所有数据类型都是对java中的接口的实现，因此行为细节和java中的对应类型完全一致</li>
+<li>与关系型数据库不同，没有限制最大长度的”字符数组“，hive根据不同字段间的分隔符来判断，强调优化磁盘读写性能，限制列值长度相对来说不重要</li>
+<li>BINARY和很多关系型数据库的VARBINARY数据类型类似，和BLOB类型不同（BINARY的列是存储在记录中的），BINARY可以在记录中包含任意字节，这样可以防止Hive尝试将其作为数字、字符串等进行解析</li>
+<li>当用户比较表中不同类型的记录时（如float和double比较），Hive会隐式地将类型转换成两个类型中较大的那个，再进行同类型比较，也可以使用手动转换，使用函数cast（s as int）</li>
+</ol>
+<h2 id="集合数据类型"><a href="#集合数据类型" class="headerlink" title="集合数据类型"></a>集合数据类型</h2><table>
+<thead>
+<tr>
+<th>数据类型</th>
+<th>描述</th>
+<th>语法示例</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>STRUCT</td>
+<td>类似C语言的结构体，如：STRUCT&lt;street:STRING, city:STRING, state:STRING&gt;</td>
+<td>struct(‘五常’,’杭州’,’拥堵’)</td>
+</tr>
+<tr>
+<td>MAP</td>
+<td>键-值对元素集合，可以通过key获取到value</td>
+<td>map(‘first’,’join’,’last’,’doe’)</td>
+</tr>
+<tr>
+<td>ARRAY</td>
+<td>一组具有相同类型和名称的变量的集合，可以通过下标获取元素</td>
+<td>Array(‘john’,’doe’)</td>
+</tr>
+</tbody></table>
+<ol>
+<li>集合数据类型的名称是保留字</li>
+<li>优点：大多数关系型数据库不支持集合类型，在大数据系统中，不遵循标准格式的好处是可以提高更高吞吐量的数据，可以减少头部寻址来增加查询次数</li>
+<li>缺点：然而破坏标准格式会增加数据冗余的风险，从而导致消耗不必要的磁盘空间，还有可能导致数据不一致，当数据发生改变时冗余的数据可能存在无法进行同步的风险</li>
+</ol>
+<p><strong>示例</strong></p>
+<p>create table employees(</p>
+<p>​    name string,</p>
+<p>​    salary float,</p>
+<p>​    subordinates array<string>,</string></p>
+<p>​    deductions map&lt;string, float&gt;,  </p>
+<p>​    address struct&lt;street:string, city:string, state:string, zip:int&gt;</p>
+<p>)</p>
+<ol>
+<li>subordinates下属员工列表是一个字符串数组</li>
+<li>deductions是一个键值对构成的map，记录每一次扣除的余额</li>
+<li>address家庭地址使用struct类型存储，对每个域进行命名</li>
+</ol>
+<h2 id="读时模式"><a href="#读时模式" class="headerlink" title="读时模式"></a>读时模式</h2><p>传统数据库是写时模式，也就是说在数据写入数据库时进行检查</p>
+<p>hive则是在查询时对数据进行验证，也就是读时模式</p>
+<p>读时模式的具体做法是hive在读取数据时，如果发现存在不匹配的字段，则对这些字段返回null值</p>
+<h1 id="HiveQL-数据定义"><a href="#HiveQL-数据定义" class="headerlink" title="HiveQL - 数据定义"></a>HiveQL - 数据定义</h1><p>hiveql是hive的查询语言，在所有近亲语言中和mysql方言最像，但是又有一定的差别。<strong>hive不支持行级插入操作、更新操作和删除操作，也不支持事务。</strong></p>
+<h3 id="Hive中的数据库"><a href="#Hive中的数据库" class="headerlink" title="Hive中的数据库"></a>Hive中的数据库</h3><p>hive中的数据库本质上是表的目录或者命名空间，在多用户的集群下，可以有效避免表的命名冲突</p>
+<p>hive会为每个数据库创建一个目录，数据库中的表将会以这个数据库目录的子目录形式存储（default除外，这个数据库本身没有自己的目录）数据库所在目录位于hive.metastore.warehouse.dir所指定的顶层目录之后，假设用户使用默认配置，目录就是/user/hive/warehouse，我们创建test库时就会有一个/user/hive/warehouse/test.db目录</p>
+<p>创建数据库</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">create</span> <span class="keyword">database</span> <span class="keyword">if</span> <span class="keyword">not</span> <span class="keyword">exists</span> <span class="keyword">test</span></span><br></pre></td></tr></table></figure>
 
-        <div class="article-info info-on-right">
-          
-          
+<p>在创建数据库时也可以通过location来指定数据库位置</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">create</span> <span class="keyword">database</span> <span class="keyword">test</span> location <span class="string">'/my/preferred/dir'</span></span><br></pre></td></tr></table></figure>
 
+<p>也可以通过comment为数据库添加描述信息</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">create</span> <span class="keyword">database</span> <span class="keyword">test</span></span><br><span class="line"><span class="keyword">comment</span> <span class="string">'this is a test database'</span></span><br></pre></td></tr></table></figure>
+
+<p>查看所有数据库</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">show</span> <span class="keyword">databases</span></span><br></pre></td></tr></table></figure>
+
+<p>可以使用正则表达式来进行数据库筛选，例如搜索所有以te开头的库</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">show</span> <span class="keyword">databases</span> <span class="keyword">like</span> <span class="string">'te.*'</span></span><br></pre></td></tr></table></figure>
+
+<p>使用describe来查看数据库信息</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">describe</span> <span class="keyword">database</span> <span class="keyword">test</span></span><br></pre></td></tr></table></figure>
+
+<p>查询结果：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Database Name airflow</span><br><span class="line">Description</span><br><span class="line">Location hdfs://master-server/user/hive/warehouse/test.db</span><br></pre></td></tr></table></figure>
+
+<p>可以看出describe时会显示出数据库所在的文件目录位置</p>
+<p>在本例中，EMR的URI格式是hdfs，如果是mapR，这里是maprfs</p>
+<p>USE命令用于将某个数据库设置为用户当前工作的数据库，等价于在文件系统中切换工作目录</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">use</span> <span class="keyword">test</span></span><br></pre></td></tr></table></figure>
+
+<p>此时可以不带数据库前缀，直接操作本数据库下的表</p>
+<p>但是并没有命令可以查看用户当前所在的库，但是用户在不确定的情况下可以重复使用user来更新自己的位置，因为hive里是没有库嵌套的说法的</p>
+<p>如果是控制台的话，用户可以设置显示当前所在的数据库</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">set</span> hive.cli.print.current.db=<span class="literal">true</span></span><br></pre></td></tr></table></figure>
+
+<p>最后，用户可以删除库（删库跑路）</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">drop</span> <span class="keyword">database</span> <span class="keyword">if</span> <span class="keyword">exists</span> <span class="keyword">test</span></span><br></pre></td></tr></table></figure>
+
+<p>默认情况下，数据库里如果含有表，用户是不能删除这个库的，删除这样的库需要先删除表或者在命令的最后加上<strong>cascade</strong></p>
+<p>修改数据库：</p>
+<p>alter database可以为数据库设置键值对来描述数据库属性信息（数据库的其他元数据信息都不可更改，包括库名和所在目录）</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">alter</span> <span class="keyword">database</span> <span class="keyword">test</span> <span class="keyword">set</span> dbproperties(<span class="string">'edited-by'</span>=<span class="string">'chongming'</span>)</span><br></pre></td></tr></table></figure>
+
+<h3 id="数据表"><a href="#数据表" class="headerlink" title="数据表"></a>数据表</h3><h4 id="创建表"><a href="#创建表" class="headerlink" title="创建表"></a>创建表</h4><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">create</span> <span class="keyword">table</span> <span class="keyword">if</span> <span class="keyword">not</span> <span class="keyword">exists</span> mydb.employees(</span><br><span class="line">	<span class="keyword">name</span> <span class="keyword">string</span> <span class="keyword">comment</span> <span class="string">'employee name'</span>,</span><br><span class="line">	salary <span class="built_in">float</span> <span class="keyword">comment</span> <span class="string">'employee salary'</span>,</span><br><span class="line">	subordinates <span class="built_in">array</span>&lt;<span class="keyword">string</span>&gt; <span class="keyword">comment</span> <span class="string">'names of subordinates'</span>,</span><br><span class="line">	deductions <span class="keyword">map</span>&lt;<span class="keyword">string</span>, <span class="built_in">float</span>&gt; <span class="keyword">comment</span> <span class="string">'keys are deductions names, values are percentages'</span>,</span><br><span class="line">	address <span class="keyword">struct</span>&lt;street:<span class="keyword">string</span>, city:<span class="keyword">string</span>, state:<span class="keyword">string</span>, zip:<span class="built_in">int</span>&gt; <span class="keyword">comment</span> <span class="string">'home address'</span></span><br><span class="line">)</span><br><span class="line"><span class="keyword">comment</span> <span class="string">'description of the table'</span></span><br><span class="line">tblproperties (<span class="string">'creator'</span>=<span class="string">'chongming'</span>, <span class="string">'created_at'</span>=<span class="string">'2019-11-03 10:00:00'</span>)</span><br><span class="line">location <span class="string">'/user/hive/warehouse/mydb.db/employees'</span>;</span><br></pre></td></tr></table></figure>
+
+<p>值得注意的是，用户这里用if not exists，如果已经存在同名表但指定的模式不同，hive是会忽略掉这个差异的。</p>
+<p>用户可以拷贝一张已存在的表的表模式</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">create</span> <span class="keyword">table</span> <span class="keyword">if</span> <span class="keyword">not</span> <span class="keyword">exists</span> mydb.employees2 <span class="keyword">like</span> mydb.employees</span><br></pre></td></tr></table></figure>
+
+<p>查看当前数据库下的表</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">use</span> <span class="keyword">test</span>;</span><br><span class="line"><span class="keyword">show</span> <span class="keyword">tables</span>;</span><br></pre></td></tr></table></figure>
+
+<p>也可以直接指定要查看的数据库</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">show</span> <span class="keyword">tables</span> <span class="keyword">in</span> <span class="keyword">test</span>;</span><br></pre></td></tr></table></figure>
+
+<p>或者使用正则表达式来过滤表</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">show</span> <span class="keyword">tables</span> <span class="string">'empl.*'</span>;</span><br></pre></td></tr></table></figure>
+
+<p>要注意的是，hive并非支持所有的正则表达式功能</p>
+<p>我们可以使用extended来查看表的详细结构信息</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">describe</span> <span class="keyword">extended</span> test.employees</span><br></pre></td></tr></table></figure>
+
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+
+      
+
+      
+        
+<div class="share-btn share-icons tooltip-left">
+  <div class="tooltip tooltip-east">
+    <span class="tooltip-item">
+      <a href="javascript:;" class="share-sns share-outer">
+        <i class="icon icon-share"></i>
+      </a>
+    </span>
+    <span class="tooltip-content">
+      <div class="share-wrap">
+        <div class="share-icons">
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="icon icon-weibo"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="icon icon-weixin"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="icon icon-qq"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="icon icon-douban"></i>
+          </a>
+          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a>
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="icon icon-facebook"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="icon icon-twitter"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="icon icon-google"></i>
+          </a>
         </div>
-        <div class="clearfix"></div>
-    </header>
+      </div>
+    </span>
+  </div>
+</div>
+
+<div class="page-modal wx-share js-wx-box">
+    <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="//pan.baidu.com/share/qrcode?url=http://yoursite.com/2019/10/07/hive-操作表/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div class="mask js-mask"></div>
+      
+      <div class="clearfix"></div>
+    </div>
   </div>
 </article>
+
   
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/09/16/jvm学习笔记/" class="archive-article-date">
-  	<time datetime="2019-09-16T13:58:11.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-09-16</time>
-</a>
+<nav id="article-nav">
+  
+  
+    <a href="/2019/09/16/jvm学习笔记/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">jvm学习笔记</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
         </div>
-    	 
+        
+        
+    </div>
+</aside>
+
+
+
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/09/16/jvm学习笔记/">jvm学习笔记</a>
-    </h1>
+  
   
 
-        <div class="article-info info-on-right">
-          
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/09/16/记一次使用xstream遇到的坑/" class="archive-article-date">
-  	<time datetime="2019-09-16T13:57:11.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-09-16</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/09/16/记一次使用xstream遇到的坑/">记一次使用xstream遇到的坑</a>
-    </h1>
   
 
-        <div class="article-info info-on-right">
-          
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/09/16/cglib动态代理探究/" class="archive-article-date">
-  	<time datetime="2019-09-16T13:54:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-09-16</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/09/16/cglib动态代理探究/">cglib动态代理探究</a>
-    </h1>
   
 
-        <div class="article-info info-on-right">
-          
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/09/16/jdk动态代理探究/" class="archive-article-date">
-  	<time datetime="2019-09-16T13:50:35.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-09-16</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/09/16/jdk动态代理探究/">jdk动态代理探究</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/09/16/收藏/" class="archive-article-date">
-  	<time datetime="2019-09-16T13:50:01.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-09-16</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/09/16/收藏/">收藏</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/09/16/java动态代理机制/" class="archive-article-date">
-  	<time datetime="2019-09-16T13:47:50.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-09-16</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/09/16/java动态代理机制/">java动态代理机制</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/09/16/restful风格最佳实践/" class="archive-article-date">
-  	<time datetime="2019-09-16T13:41:08.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-09-16</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/09/16/restful风格最佳实践/">restful风格最佳实践</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/09/16/大数据学习-从入门到如土/" class="archive-article-date">
-  	<time datetime="2019-09-16T12:27:24.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-09-16</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/09/16/大数据学习-从入门到如土/">大数据学习-从入门到入土</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/09/11/线程池的使用/" class="archive-article-date">
-  	<time datetime="2019-09-11T14:52:55.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-09-11</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/09/11/线程池的使用/">线程池的使用</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-  
-    </div></section>
-  
-
-    
-    <nav id="page-nav">
-      <span class="page-number current">1</span><a class="page-number" href="/archives/page/2/">2</a><a class="extend next" rel="next" href="/archives/page/2/">Next &raquo;</a>
-    </nav>
   
 
 
@@ -465,8 +482,8 @@
 	var yiliaConfig = {
 		mathjax: false,
 		isHome: false,
-		isPost: false,
-		isArchive: true,
+		isPost: true,
+		isArchive: false,
 		isTag: false,
 		isCategory: false,
 		open_in_new: false,

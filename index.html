@@ -155,19 +155,195 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-hive-操作表" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-hive-查询" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/10/07/hive-操作表/">大数据学习-hive</a>
+      <a class="article-title" href="/2019/11/24/hive-查询/">hive-查询</a>
     </h1>
   
 
         
-        <a href="/2019/10/07/hive-操作表/" class="archive-article-date">
+        <a href="/2019/11/24/hive-查询/" class="archive-article-date">
+  	<time datetime="2019-11-24T08:56:21.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-11-24</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/11/24/hive-查询/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-hive-性能调优" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/11/24/hive-性能调优/">hive-性能调优</a>
+    </h1>
+  
+
+        
+        <a href="/2019/11/24/hive-性能调优/" class="archive-article-date">
+  	<time datetime="2019-11-24T08:47:32.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-11-24</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>hive是一种声明式语言，用户会提交声明式查询，而Hive会将其转换成MapReduce job</p>
+<p>大多数情况，用户不需要了解Hive内部的工作原理，复杂的内部查询解析和优化工作都已经由hive开发团队实现</p>
+<h1 id="索引"><a href="#索引" class="headerlink" title="索引"></a>索引</h1><p>hive只有有限的索引功能，hive中没有普通关系型数据库中键的概念，但是还是可以对一些字段建立索引来加速某些操作，一张表的索引数据存储在另一张表中</p>
+<p>当逻辑分区实际上太多太细而几乎无法使用时，建立索引成为了分区的另一个选择</p>
+<p>通过EXPLAIN可以查看某个查询语句是否用到了索引</p>
+<p><strong>创建索引</strong></p>
+<p>拿employees员工表举例：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">create</span> <span class="keyword">table</span> employees(</span><br><span class="line"> <span class="keyword">name</span> <span class="keyword">STRING</span>,</span><br><span class="line"> salary <span class="built_in">float</span>,</span><br><span class="line"> subordinates <span class="built_in">array</span>&lt;<span class="keyword">STRING</span>&gt;,</span><br><span class="line"> deductions <span class="keyword">map</span>&lt;<span class="keyword">STRING</span>, <span class="built_in">float</span>&gt;,  </span><br><span class="line"> address <span class="keyword">struct</span>&lt;street:<span class="keyword">STRING</span>, city:<span class="keyword">STRING</span>, state:<span class="keyword">STRING</span>, zip:<span class="built_in">int</span>&gt;</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+
+<p>创建索引：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">create</span> <span class="keyword">index</span> employees_index </span><br><span class="line"><span class="keyword">on</span> <span class="keyword">table</span> employees (country)</span><br><span class="line"><span class="keyword">as</span> <span class="string">'org.apache.hadoop.hive.ql.index.compact.CompactIndexHandler'</span></span><br><span class="line"><span class="keyword">with</span> <span class="keyword">deferred</span> <span class="keyword">rebuild</span></span><br><span class="line">idxproperties (<span class="string">'creator'</span> = <span class="string">'me'</span>, <span class="string">'created_at'</span> = <span class="string">'some_time'</span>)</span><br><span class="line"><span class="keyword">in</span> <span class="keyword">table</span> employees_index_table</span><br><span class="line">partitioned <span class="keyword">by</span> (country, <span class="keyword">name</span>)</span><br><span class="line"><span class="keyword">comment</span> <span class="string">'Employees indexed by country and name.'</span>;</span><br></pre></td></tr></table></figure>
+
+<p>as…指定索引处理器，也就是一个实现了索引接口的java类，hive本身包含一些典型的索引实现，也可以通过第三方实现来优化处理特定场景，支持特定文件格式；如果需要可以参照Hive Wiki里的例子进行定制化索引</p>
+<p>如果指定了with deferred rebuild 那么新索引将呈现空白状态，可以用于第一次索引创建或索引重建</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">alter</span> <span class="keyword">index</span> employees_index</span><br><span class="line"><span class="keyword">on</span> <span class="keyword">table</span> employees</span><br><span class="line"><span class="keyword">partition</span> (country = <span class="string">'US'</span>)</span><br><span class="line"><span class="keyword">rebuild</span></span><br></pre></td></tr></table></figure>
+
+<p>如果不加partition，则会对所有分区重建索引</p>
+<h1 id="EXPLAIN"><a href="#EXPLAIN" class="headerlink" title="EXPLAIN"></a>EXPLAIN</h1><p>执行以下语句</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">explain</span> <span class="keyword">select</span> <span class="keyword">sum</span>(salary) <span class="keyword">from</span> mydb.employees</span><br></pre></td></tr></table></figure>
+
+<p>得到以下结果</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">Query Plan</span><br><span class="line">- Output[_col0] =&gt; [sum:real]</span><br><span class="line">        _col0 := sum</span><br><span class="line">    - Aggregate(FINAL) =&gt; [sum:real]</span><br><span class="line">            sum := "sum"("sum_4")</span><br><span class="line">        - LocalExchange[SINGLE] () =&gt; sum_4:double</span><br><span class="line">            - RemoteExchange[GATHER] =&gt; sum_4:double</span><br><span class="line">                - Aggregate(PARTIAL) =&gt; [sum_4:double]</span><br><span class="line">                        Cost: &#123;rows: ? (?), cpu: ?, memory: ?, network: 0.00&#125;</span><br><span class="line">                        sum_4 := "sum"("salary")</span><br><span class="line">                    - TableScan[hive:dm_dsp:employees, originalConstraint = true] =&gt; [salary:real]</span><br><span class="line">                            Cost: &#123;rows: ? (?), cpu: ?, memory: 0.00, network: 0.00&#125;</span><br><span class="line">                            LAYOUT: mydb.employees</span><br><span class="line">                            salary := HiveColumnHandle&#123;name=salary, hiveType=float, hiveColumnIndex=1, columnType=REGULAR, comment=employee salary&#125;</span><br></pre></td></tr></table></figure>
+
+<p>执行explain会打印出抽象语法树，表明hive是如何将查询解析成token（符号）和literal（字面值）的，是第一步查询到最终结果的一部分。</p>
+<p>也可以使用EXPLAIN EXTENTED展示更完整的输出</p>
+<p>一个hive任务会包含一个或多个stage（阶段），不同的stage间会存在依赖关系。默认一次执行一个stage，也可以并行执行stage</p>
+<h1 id="JOIN优化"><a href="#JOIN优化" class="headerlink" title="JOIN优化"></a>JOIN优化</h1><h4 id="join语句-inner-join"><a href="#join语句-inner-join" class="headerlink" title="join语句-inner join"></a>join语句-inner join</h4><p>同关系型数据库一样，inner join仅留下进行连接的两张表中都存在的、与连接标准相匹配的记录</p>
+<p>注意：</p>
+<ol>
+<li>hive不支持on子句中使用&lt;=（由于Pig提供了一个交叉生产的功能，所以可以支持这种连接，但是原生的pig不支持）</li>
+<li>hive不支持on子句中的条件使用OR连接</li>
+</ol>
+<p>大多数情况下hive会对join连接启动一个mapReduce任务</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> a.ymd, a.price_close, b.price_close, c.price_close</span><br><span class="line"><span class="keyword">from</span> stocks a <span class="keyword">join</span> stocks b <span class="keyword">on</span> a.ymd = b.ymd</span><br><span class="line">							<span class="keyword">join</span> stocks c <span class="keyword">on</span> a.ymd = c.ymd</span><br><span class="line"><span class="keyword">where</span> a.symbol = <span class="string">'AAPL'</span> <span class="keyword">and</span> b.symbol = <span class="string">'IBM'</span> <span class="keyword">and</span> c.symbol = <span class="string">'GE'</span>;</span><br></pre></td></tr></table></figure>
+
+<p>上述sql的作用是对Apple公司、IBM公司、GE公司的股票并排进行比较</p>
+<p>在本例中，会首先启动一个mapReduce job任务将a和b进行连接操作，再启动一个mapReduce job将第一个mapReduce job的输出和表c进行连接操作</p>
+<h4 id="join优化"><a href="#join优化" class="headerlink" title="join优化"></a>join优化</h4><p><strong>当对3个或者更多个表进行join连接时，如果每个on子句都使用相同连接键的话，只会产生一个mapReduce job</strong></p>
+<p>hive会假定查询中的最后一个表是最大表，在对每行记录进行连接操作时，尝试将其他表缓存起来，然后扫描最后的表进行计算。因此用户需要保证连续查询中的表从左到右大小依次增加</p>
+<p>此外，hive提供了一个标记机制来显式地告知查询优化器哪张表是大表</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="comment">/*+STREAMTABLE(s) */</span>s.ymd, s.symbol, s.price_close, d.dividend </span><br><span class="line"><span class="keyword">from</span> stocks s <span class="keyword">join</span> dividends d <span class="keyword">on</span> s.ymd = d.ymd <span class="keyword">and</span> s.symbol = d.symbol</span><br><span class="line"><span class="keyword">where</span> s.symbol = <span class="string">'AAPL'</span>;</span><br></pre></td></tr></table></figure>
+
+<p>此时hive会尝试将stocks表作为驱动表，即使没有放在最后</p>
+<h4 id="map-side-JOIN"><a href="#map-side-JOIN" class="headerlink" title="map-side JOIN"></a>map-side JOIN</h4><p>hive可以在map端执行连接过程（map-side join），hive可以和内存中的小表进行逐一匹配，从而省略掉常规连接操作所需的reduce过程，即使对于很小的数据集，这个优化也明显快于常规连接操作</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="comment">/*+ mapjoin(d) */</span> s.ymd, s.symbol, s.price_close, d.dividend</span><br><span class="line"><span class="keyword">from</span> stocks s <span class="keyword">join</span> dividends d <span class="keyword">on</span> s.ymd = d.ymd <span class="keyword">and</span> s.symbol = d.symbol</span><br><span class="line"><span class="keyword">where</span> s.symbol = <span class="string">'AAPL'</span>;</span><br></pre></td></tr></table></figure>
+
+<p>hive v0.7以后废除了这种标记方式，但增加了这个标记也同样有效</p>
+<p>如果不加这个标记，用户需要设置属性来开启</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">set hive.auto.convert.join=true;</span><br></pre></td></tr></table></figure>
+
+<p><strong>hive对右外连接和全外连接不支持这个优化</strong></p>
+<p>（ps.如果所有表中的数据是分桶的，那么 1.表中的数据必须是按照on语句中的键来分桶；2.一张表的分桶必须是另一张的分桶个数的若干倍；此时hive会在map阶段按照分桶数据进行连接，不过会先取出来一张表中的所有内容，然后再去和另一张表中的每个分桶进行匹配连接，而且同样需要设置 set hive.optimize.bucketmapJOIN=true;才能生效）</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/11/24/hive-性能调优/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-hive-数据定义" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/10/07/hive-数据定义/">hive-数据定义</a>
+    </h1>
+  
+
+        
+        <a href="/2019/10/07/hive-数据定义/" class="archive-article-date">
   	<time datetime="2019-10-07T08:19:45.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-10-07</time>
 </a>
         
@@ -275,13 +451,8 @@
 <li>缺点：然而破坏标准格式会增加数据冗余的风险，从而导致消耗不必要的磁盘空间，还有可能导致数据不一致，当数据发生改变时冗余的数据可能存在无法进行同步的风险</li>
 </ol>
 <p><strong>示例</strong></p>
-<p>create table employees(</p>
-<p>​    name string,</p>
-<p>​    salary float,</p>
-<p>​    subordinates array<string>,</string></p>
-<p>​    deductions map&lt;string, float&gt;,  </p>
-<p>​    address struct&lt;street:string, city:string, state:string, zip:int&gt;</p>
-<p>)</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">create</span> <span class="keyword">table</span> employees(</span><br><span class="line"> <span class="keyword">name</span> <span class="keyword">STRING</span>,</span><br><span class="line"> salary <span class="built_in">float</span>,</span><br><span class="line"> subordinates <span class="built_in">array</span>&lt;<span class="keyword">STRING</span>&gt;,</span><br><span class="line"> deductions <span class="keyword">map</span>&lt;<span class="keyword">STRING</span>, <span class="built_in">float</span>&gt;,  </span><br><span class="line"> address <span class="keyword">struct</span>&lt;street:<span class="keyword">STRING</span>, city:<span class="keyword">STRING</span>, state:<span class="keyword">STRING</span>, zip:<span class="built_in">int</span>&gt;</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+
 <ol>
 <li>subordinates下属员工列表是一个字符串数组</li>
 <li>deductions是一个键值对构成的map，记录每一次扣除的余额</li>
@@ -332,7 +503,7 @@
 <p>alter database可以为数据库设置键值对来描述数据库属性信息（数据库的其他元数据信息都不可更改，包括库名和所在目录）</p>
 <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">alter</span> <span class="keyword">database</span> <span class="keyword">test</span> <span class="keyword">set</span> dbproperties(<span class="string">'edited-by'</span>=<span class="string">'chongming'</span>)</span><br></pre></td></tr></table></figure>
 
-<h3 id="数据表"><a href="#数据表" class="headerlink" title="数据表"></a>数据表</h3><h4 id="创建表"><a href="#创建表" class="headerlink" title="创建表"></a>创建表</h4><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">create</span> <span class="keyword">table</span> <span class="keyword">if</span> <span class="keyword">not</span> <span class="keyword">exists</span> mydb.employees(</span><br><span class="line">	<span class="keyword">name</span> <span class="keyword">string</span> <span class="keyword">comment</span> <span class="string">'employee name'</span>,</span><br><span class="line">	salary <span class="built_in">float</span> <span class="keyword">comment</span> <span class="string">'employee salary'</span>,</span><br><span class="line">	subordinates <span class="built_in">array</span>&lt;<span class="keyword">string</span>&gt; <span class="keyword">comment</span> <span class="string">'names of subordinates'</span>,</span><br><span class="line">	deductions <span class="keyword">map</span>&lt;<span class="keyword">string</span>, <span class="built_in">float</span>&gt; <span class="keyword">comment</span> <span class="string">'keys are deductions names, values are percentages'</span>,</span><br><span class="line">	address <span class="keyword">struct</span>&lt;street:<span class="keyword">string</span>, city:<span class="keyword">string</span>, state:<span class="keyword">string</span>, zip:<span class="built_in">int</span>&gt; <span class="keyword">comment</span> <span class="string">'home address'</span></span><br><span class="line">)</span><br><span class="line"><span class="keyword">comment</span> <span class="string">'description of the table'</span></span><br><span class="line">tblproperties (<span class="string">'creator'</span>=<span class="string">'chongming'</span>, <span class="string">'created_at'</span>=<span class="string">'2019-11-03 10:00:00'</span>)</span><br><span class="line">location <span class="string">'/user/hive/warehouse/mydb.db/employees'</span>;</span><br></pre></td></tr></table></figure>
+<h3 id="数据表"><a href="#数据表" class="headerlink" title="数据表"></a>数据表</h3><h4 id="创建表"><a href="#创建表" class="headerlink" title="创建表"></a>创建表</h4><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">create</span> <span class="keyword">table</span> <span class="keyword">if</span> <span class="keyword">not</span> <span class="keyword">exists</span> mydb.employees(</span><br><span class="line">	<span class="keyword">name</span> <span class="keyword">STRING</span> <span class="keyword">comment</span> <span class="string">'employee name'</span>,</span><br><span class="line">	salary <span class="built_in">float</span> <span class="keyword">comment</span> <span class="string">'employee salary'</span>,</span><br><span class="line">	subordinates <span class="built_in">array</span>&lt;<span class="keyword">STRING</span>&gt; <span class="keyword">comment</span> <span class="string">'names of subordinates'</span>,</span><br><span class="line">	deductions <span class="keyword">map</span>&lt;<span class="keyword">STRING</span>, <span class="built_in">float</span>&gt; <span class="keyword">comment</span> <span class="string">'keys are deductions names, values are percentages'</span>,</span><br><span class="line">	address <span class="keyword">struct</span>&lt;street:<span class="keyword">STRING</span>, city:<span class="keyword">STRING</span>, state:<span class="keyword">STRING</span>, zip:<span class="built_in">int</span>&gt; <span class="keyword">comment</span> <span class="string">'home address'</span></span><br><span class="line">)</span><br><span class="line"><span class="keyword">comment</span> <span class="string">'description of the table'</span></span><br><span class="line">tblproperties (<span class="string">'creator'</span>=<span class="string">'chongming'</span>, <span class="string">'created_at'</span>=<span class="string">'2019-11-03 10:00:00'</span>)</span><br><span class="line">location <span class="string">'/user/hive/warehouse/mydb.db/employees'</span>;</span><br></pre></td></tr></table></figure>
 
 <p>值得注意的是，用户这里用if not exists，如果已经存在同名表但指定的模式不同，hive是会忽略掉这个差异的。</p>
 <p>用户可以拷贝一张已存在的表的表模式</p>
@@ -351,6 +522,76 @@
 <p>我们可以使用extended来查看表的详细结构信息</p>
 <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">describe</span> <span class="keyword">extended</span> test.employees</span><br></pre></td></tr></table></figure>
 
+<p><strong>管理表</strong></p>
+<p>我们目前所创建的表都成为管理表（或者内部表），hive默认会将管理表放在配置项hive.metastore.warehouse.dir定义的目录的子目录下，删除表时数据也会随之删除</p>
+<p>但是管理表不方便和其他工作共享数据，这时我们通常使用外部表</p>
+<p><strong>外部表</strong></p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">create</span> <span class="keyword">external</span> <span class="keyword">table</span> <span class="keyword">if</span> <span class="keyword">not</span> <span class="keyword">exists</span> stocks(</span><br><span class="line">  <span class="keyword">exchange</span> <span class="keyword">STRING</span>,</span><br><span class="line">  symbol <span class="keyword">STRING</span>,</span><br><span class="line">  ymd <span class="keyword">STRING</span></span><br><span class="line">  ...</span><br><span class="line">)</span><br><span class="line"><span class="keyword">row</span> <span class="keyword">format</span> <span class="keyword">delimited</span> <span class="keyword">fields</span> <span class="keyword">terminated</span> <span class="keyword">by</span> <span class="string">','</span></span><br><span class="line">location <span class="string">'/data/stocks'</span>;</span><br></pre></td></tr></table></figure>
+
+<p>external告诉hive这是一张外部表，location表明hive数据实际落在哪个目录下</p>
+<p>删除该表不会删除数据，只会删除表的元数据信息</p>
+<p>对于管理表，用户还可以对一张存在的表的表结构进行复制</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">create</span> <span class="keyword">external</span> <span class="keyword">table</span> <span class="keyword">if</span> <span class="keyword">not</span> <span class="keyword">exists</span> mydb.employees3 </span><br><span class="line"><span class="keyword">like</span> mydb.employees</span><br><span class="line">location <span class="string">'/path/to/data'</span>;</span><br></pre></td></tr></table></figure>
+
+<p><strong>分区表</strong></p>
+<p>数据分区的概念存在已久，可以有多种形式，通常使用分区来水平分散压力，将数据从物理上转移到和使用最频繁的用户更近的地方，对数据进行分区，最重要的是查询优化</p>
+<p>例如存在员工表：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">create</span> <span class="keyword">table</span> employees(</span><br><span class="line">  <span class="keyword">name</span> <span class="keyword">STRING</span>,</span><br><span class="line">  salary <span class="built_in">FLOAT</span>,</span><br><span class="line">  subordinates <span class="built_in">ARRAY</span>&lt;<span class="keyword">STRING</span>&gt;,</span><br><span class="line">  deductions <span class="keyword">MAP</span>&lt;<span class="keyword">STRING</span>, <span class="built_in">FLOAT</span>&gt;,</span><br><span class="line">  address <span class="keyword">STRUCT</span>&lt;street:<span class="keyword">STRING</span>, city:<span class="keyword">STRING</span>, state:<span class="keyword">STRING</span>, zip:<span class="built_in">INT</span>&gt;</span><br><span class="line">)</span><br><span class="line">PARTITIONED <span class="keyword">BY</span> (country <span class="keyword">STRING</span>, state <span class="keyword">STRING</span>);</span><br></pre></td></tr></table></figure>
+
+<p>分区表改变了hive对数据存储的组织方式假设我们在mydb库中创建的表，则会产生目录：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hdfs://master_server/user/hive/warehouse/mydb.db/employees</span><br></pre></td></tr></table></figure>
+
+<p>由于我们对employees表进行分区，则会产生对应分区的子目录：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">...</span><br><span class="line">.../employees/country=CA/state=AB</span><br><span class="line">.../employees/country=CA/state=BC</span><br><span class="line">.../employees/country=US/state=AL</span><br><span class="line">.../employees/country=US/state=AK</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+
+<p>当我们在where子句中增加谓词来按照分区值进行过滤时，这些谓词被称为分区过滤器</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> * <span class="keyword">from</span> employees <span class="keyword">where</span> country = <span class="string">'US'</span> <span class="keyword">and</span> state = <span class="string">'IL'</span>;</span><br></pre></td></tr></table></figure>
+
+<p>hive可以设置严格模式来禁止不加分区的查询语句</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">set hive.mapred.mode=strict</span><br></pre></td></tr></table></figure>
+
+<p>用户可以通过show partitions命令来查看表中存在的所有分区</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">show</span> <span class="keyword">partitions</span> employees</span><br></pre></td></tr></table></figure>
+
+<p>也可以查看特定分区键下的分区</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">show</span> <span class="keyword">partitions</span> employees <span class="keyword">partition</span>(country=<span class="string">'US'</span>)</span><br></pre></td></tr></table></figure>
+
+<p><strong>外部分区表</strong></p>
+<p>外部表也可以使用分区。在定义外部表时，必须定义一个LOCATION子句的数据文件目录，而对于外部分区表，不需要定义这个LOCATION子句，有一个ALTER TABLE XX ADD PARTITION ….LOCATION….语句在添加分区时定义这个分区的数据文件的目录。</p>
+<p>例如：日志文件分析</p>
+<p>日志标准信息：时间戳、严重程度（ERROR、WARNING、INFO）、服务器名称、进程ID、备注（一个通用文本信息）</p>
+<p>可以按照如下方式定义表：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">create</span> <span class="keyword">external</span> <span class="keyword">table</span> <span class="keyword">if</span> <span class="keyword">not</span> <span class="keyword">exists</span> log_messages(</span><br><span class="line">	hms <span class="built_in">int</span>,</span><br><span class="line">	serverity <span class="keyword">String</span>,</span><br><span class="line">	<span class="keyword">server</span> <span class="keyword">String</span>,</span><br><span class="line">	process_id <span class="built_in">int</span>,</span><br><span class="line">	message <span class="keyword">String</span></span><br><span class="line">)</span><br><span class="line">partitioned <span class="keyword">by</span> (<span class="keyword">year</span> <span class="built_in">int</span>, <span class="keyword">month</span> <span class="built_in">int</span>, <span class="keyword">day</span> <span class="built_in">int</span>)</span><br><span class="line"><span class="keyword">row</span> <span class="keyword">format</span> <span class="keyword">delimited</span> <span class="keyword">fields</span> <span class="keyword">terminated</span> <span class="keyword">by</span> <span class="string">'\t'</span>;</span><br></pre></td></tr></table></figure>
+
+<p>按照年月日对表进行分区，时分秒这些细化的信息存在hms字段，字段之间用制表符分隔</p>
+<p>可以删除掉分区，但是分区对应的数据不受影响，因为这是外部表的一个分区指向到了数据的路径</p>
+<p>（ps：hive不关心一个分区对应的目录下有没有文件，如果不存在目录或没有对应文件，则查询时没有返回结果）</p>
+<h4 id="删除表"><a href="#删除表" class="headerlink" title="删除表"></a>删除表</h4><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">DROP</span> <span class="keyword">TABLE</span> <span class="keyword">IF</span> <span class="keyword">EXISTS</span> employees;</span><br></pre></td></tr></table></figure>
+
+<p>对于管理表，表的元数据信息和表内数据都会被删除</p>
+<p>如果用户开启Hadoop回收站功能，那么数据会被移动到用户在分布式文件系统中的用户根目录下的.Trash目录下，也就是HDFS中的/user/$USER/.Trash目录</p>
+<p>如果用户误删表，那么可以先重建表和分区，再去.Trash目录中把误删的文件移动到正确的文件目录下</p>
+<h4 id="表重命名"><a href="#表重命名" class="headerlink" title="表重命名"></a>表重命名</h4><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">alter</span> <span class="keyword">table</span> log_messages <span class="keyword">rename</span> <span class="keyword">to</span> logmsgs;</span><br></pre></td></tr></table></figure>
+
+<h4 id="增加、修改、删除表分区"><a href="#增加、修改、删除表分区" class="headerlink" title="增加、修改、删除表分区"></a>增加、修改、删除表分区</h4><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">alter</span> <span class="keyword">table</span> log_messages <span class="keyword">add</span> <span class="keyword">if</span> <span class="keyword">not</span> <span class="keyword">exists</span></span><br><span class="line"><span class="keyword">partition</span> (<span class="keyword">year</span> = <span class="number">2011</span>, <span class="keyword">month</span> = <span class="number">1</span>, <span class="keyword">day</span> = <span class="number">1</span>) location <span class="string">'/logs/2011/01/01'</span></span><br><span class="line"><span class="keyword">partition</span> (<span class="keyword">year</span> = <span class="number">2011</span>, <span class="keyword">month</span> = <span class="number">1</span>, <span class="keyword">day</span> = <span class="number">2</span>) location <span class="string">'/logs/2011/01/02'</span></span><br><span class="line">...;</span><br></pre></td></tr></table></figure>
+
+<p>使用0.8之后的hive版本，在同一个查询中可以增加多个分区语句</p>
+<p>可以通过移动位置来修改分区路径</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">alter</span> <span class="keyword">table</span> log_messages <span class="keyword">partition</span>(<span class="keyword">year</span> = <span class="number">2011</span>, <span class="keyword">month</span> = <span class="number">12</span>, <span class="keyword">day</span> = <span class="number">2</span>) </span><br><span class="line"><span class="keyword">set</span> location <span class="string">'s3n://ourbucket/logs/2011/01/02'</span>;</span><br></pre></td></tr></table></figure>
+
+<p>该命令不会将数据从旧的路径转走，也不会删除旧的数据</p>
+<p>可以删除分区：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">alter</span> <span class="keyword">table</span> log_messages <span class="keyword">drop</span> <span class="keyword">if</span> <span class="keyword">exists</span> <span class="keyword">partition</span>(<span class="keyword">year</span> = <span class="number">2011</span>, <span class="keyword">month</span> = <span class="number">12</span>, <span class="keyword">day</span> = <span class="number">2</span>);</span><br></pre></td></tr></table></figure>
+
+<p>对于管理表，分区内数据会和元数据信息一起被删除，外部表不会删除数据</p>
+<h4 id="修改列"><a href="#修改列" class="headerlink" title="修改列"></a>修改列</h4><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">alter</span> <span class="keyword">table</span> log_messages</span><br><span class="line"><span class="keyword">change</span> <span class="keyword">column</span> hms hours_minutes_seconds <span class="built_in">int</span></span><br><span class="line"><span class="keyword">comment</span> <span class="string">'...'</span></span><br><span class="line"><span class="keyword">after</span> serverity;</span><br></pre></td></tr></table></figure>
+
+<p>即使字段名或者类型不改变，也需要完全指定旧的字段名并给出新的字段名以及类型</p>
+<p>after用于移动字段，用法同关系型数据库</p>
+<h4 id="删除或者替换列"><a href="#删除或者替换列" class="headerlink" title="删除或者替换列"></a>删除或者替换列</h4><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">alter</span> <span class="keyword">table</span> log_messages <span class="keyword">replace</span> <span class="keyword">columns</span> (</span><br><span class="line">	hours_mins_secs <span class="built_in">int</span> <span class="keyword">comment</span> <span class="string">'时分秒'</span>,</span><br><span class="line">	severity <span class="keyword">String</span> <span class="keyword">comment</span> <span class="string">'服务名'</span>,</span><br><span class="line">	message <span class="keyword">String</span> <span class="keyword">comment</span> <span class="string">'备注信息'</span></span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+
+<p>该语句重命名了hms字段并从之前的表定义模式中移除了字段server和process_id</p>
+<p>alter语句只改变了表的元数据信息</p>
 
       
 
@@ -363,7 +604,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/10/07/hive-操作表/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/10/07/hive-数据定义/">展开全文 >></a>
         </p>
       
 
@@ -1231,238 +1472,6 @@
       
         <p class="article-more-link">
           <a class="article-more-a" href="/2019/09/16/restful风格最佳实践/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-大数据学习-从入门到如土" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/09/16/大数据学习-从入门到如土/">大数据学习-从入门到入土</a>
-    </h1>
-  
-
-        
-        <a href="/2019/09/16/大数据学习-从入门到如土/" class="archive-article-date">
-  	<time datetime="2019-09-16T12:27:24.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-09-16</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="大数据简史"><a href="#大数据简史" class="headerlink" title="大数据简史"></a>大数据简史</h1><ol>
-<li>2004年，谷歌发表三篇论文：分布式文件系统GFS、大数据分布式计算框架MapReduce、NoSql数据库系统BigTable，后称”三驾马车“，打开了分布式处理大数据的大门</li>
-<li>2006年，天才程序员Doug Cutting将大数据相关模块从其开发的开源搜索引擎Nutch中独立出来，形成新的项目–Hadoop，主要包括HDFS（分布式文件系统）和MapReduce（大数据计算引擎）</li>
-<li>2007年，除Yahoo之外，百度和阿里巴巴开始使用Hadoop处理大数据存储和计算工作</li>
-<li>2008年，Hadoop正式成为Apache顶级项目，Doug Cutting成为Apache基金会主席，同年，Cloudera成立；同年9月，Yahoo发布Pig代替MapReduce完成复杂编程，之后FaceBook发布Hive，支持使用SQL语法进行大数据计算</li>
-<li>2011年，经统计，截止当年FaceBook大数据平台上的90%的作业来源于Hive，同时，伴随Hadoop周边产品出现（支持数据导入导出的Sqoop、针对大规模日志进行分布式收集的Flume、MapReduce工作流调度引擎Oozie，以及NoSql相关的Hbase、Cassandra等），大数据生态体系逐渐形成</li>
-<li>2012年，Yarn成为独立项目开始运营，成为大数据平台上最主流的资源调度系统；同年，UC伯克利AMP实验室开发的Spark开始崭露头角，内存成为数据运行中的主要存储介质，减少了MapReduce执行Map和Reduce计算重启作业带来的开销。除离线计算领域发展之外，在实时计算领域，Storm、Flink等流式计算框架纷纷出现，其中Flink可以同时支持流式计算和批处理计算</li>
-<li>2013年，在数据量的爆发式增长，与框架技术的逐渐完善，大数据形成社会浪潮，影响生活的方方面面。有媒体将这一年称为”大数据元年“</li>
-</ol>
-<p>一张图概括大数据生态体系：</p>
-<p><img src="https://i.loli.net/2019/10/07/KFGaBd5Yisxu1jC.jpg" alt="1570436120204.jpg"></p>
-<h1 id="大数据应用"><a href="#大数据应用" class="headerlink" title="大数据应用"></a>大数据应用</h1>
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/09/16/大数据学习-从入门到如土/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-线程池的使用" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/09/11/线程池的使用/">线程池的使用</a>
-    </h1>
-  
-
-        
-        <a href="/2019/09/11/线程池的使用/" class="archive-article-date">
-  	<time datetime="2019-09-11T14:52:55.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-09-11</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>学习笔记，原文传送门<a href="https://blog.csdn.net/qq_38182963/article/details/78976233" target="_blank" rel="noopener">并发编程之线程池的使用及扩展和优化</a></p>
-<p>学习内容：</p>
-<ul>
-<li>Executors 线程池工厂创建的线程池类型</li>
-<li>手动创建线程池</li>
-<li>扩展线程池</li>
-<li>优化线程池异常信息</li>
-<li>设计线程池中的线程数量</li>
-</ul>
-<h4 id="Executors线程池工厂"><a href="#Executors线程池工厂" class="headerlink" title="Executors线程池工厂"></a>Executors线程池工厂</h4><ol>
-<li><p><strong>固定线程池</strong></p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ExecutorService e = Executors.newFixedThreadPool(<span class="number">5</span>);</span><br></pre></td></tr></table></figure>
-
-<p>创建固定线程数量的线程池，新任务提交时有空闲线程则执行，无空闲线程则新任务暂存在任务队列，待有空闲线程时处理</p>
-</li>
-<li><p><strong>单例线程池</strong></p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ExecutorService e = Executors.newSingleThreadExecutor();</span><br></pre></td></tr></table></figure>
-
-<p>创建只有一个线程的线程池，多余任务保存在任务队列（默认无界，上限Integer.MAX_VALUE），待有空闲线程时处理</p>
-</li>
-<li><p><strong>缓存线程池</strong></p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ExecutorService e = Executors.newCachedThreadPool();</span><br></pre></td></tr></table></figure>
-
-<p>创建可根据实际情况调整线程数量的线程池，线程数量不确定，有空闲线程时优先复用，所有线程都在工作，如果有新任务提交，则创建新的线程处理任务</p>
-</li>
-<li><p><strong>任务调用线程池</strong></p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ExecutorService e = Executors.newScheduledThreadPool(<span class="number">2</span>);</span><br></pre></td></tr></table></figure>
-
-<p>创建ScheduledThreadPoolExecutor对象，可以指定线程数量，三个方法：</p>
-<ul>
-<li>scheduleAtFixedRate 参数：command线程指令，initialDelay第一次延迟时间，period任务间隔时间，unit时间单位</li>
-<li>scheduleWithFixedDelay 参数： command线程指令，initialDelay第一次延迟时间，delay（公式：delay+任务执行时间=间隔时间），unit时间单位</li>
-<li>schedule， command线程指令，delay延迟时间，unit时间单位</li>
-</ul>
-</li>
-</ol>
-<h4 id="手动创建线程池"><a href="#手动创建线程池" class="headerlink" title="手动创建线程池"></a>手动创建线程池</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">  * corePoolSize：核心线程数量，默认5条线程（默认数量，即最少数量）</span></span><br><span class="line"><span class="comment">  * maximumPoolSize：最大20线程（指定了线程池中的最大线程数量）</span></span><br><span class="line"><span class="comment">  * keepAliveTime：空闲时间0秒（当线程池数量超过核心数量时，多余的空闲时间的存活时间，即超过核心线程数量的空闲线程，在多长时间内，会被销毁）</span></span><br><span class="line"><span class="comment">  * unit：时间单位</span></span><br><span class="line"><span class="comment">  * workQueue：等待队列（长度1024）</span></span><br><span class="line"><span class="comment">  * threadFactory：线程工厂</span></span><br><span class="line"><span class="comment">  * handler：拒绝策略，当任务队列已满，抛出RejectedExecutionException异常。</span></span><br><span class="line"><span class="comment">  */</span></span><br><span class="line"> <span class="keyword">private</span> <span class="keyword">static</span> ThreadPoolExecutor threadPool = <span class="keyword">new</span> ThreadPoolExecutor(<span class="number">5</span>, <span class="number">20</span>, <span class="number">0L</span>,</span><br><span class="line">     TimeUnit.MILLISECONDS, <span class="keyword">new</span> LinkedBlockingQueue&lt;&gt;(<span class="number">1024</span>)</span><br><span class="line">     , <span class="keyword">new</span> ThreadFactoryBuilder().setNameFormat(<span class="string">"My-Task-%d"</span>).build()</span><br><span class="line">     , <span class="keyword">new</span> AbortPolicy()</span><br><span class="line"> );</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">  * <span class="doctag">@param</span> corePoolSize 线程池基本大小，核心线程池大小</span></span><br><span class="line"><span class="comment">  *		  如果调用了线程池的prestartAllCoreThreads()方法，线程池会提前创建并启动所有基本线程。</span></span><br><span class="line"><span class="comment">  * <span class="doctag">@param</span> maximumPoolSize 最大线程数，超过就reject；线程池允许创建的最大线程数。</span></span><br><span class="line"><span class="comment">  * 		  如果队列满了，并且已创建的线程数小于最大线程数，则线程池会再创建新的线程执行任务</span></span><br><span class="line"><span class="comment">  * <span class="doctag">@param</span> keepAliveTime 线程池的工作线程空闲后，保持存活的时间。所以，如果任务很多，并且每个任务执行</span></span><br><span class="line"><span class="comment">  * 		  的时间比较短，可以调大时间，提高线程的利用率</span></span><br><span class="line"><span class="comment">  * <span class="doctag">@param</span> unit the time unit for the &#123;<span class="doctag">@code</span> keepAliveTime&#125; argument</span></span><br><span class="line"><span class="comment">  * <span class="doctag">@param</span> workQueue the queue to use for holding tasks before they are</span></span><br><span class="line"><span class="comment">  *        executed.  This queue will hold only the &#123;<span class="doctag">@code</span> Runnable&#125;</span></span><br><span class="line"><span class="comment">  *        tasks submitted by the &#123;<span class="doctag">@code</span> execute&#125; method.</span></span><br><span class="line"><span class="comment">  * <span class="doctag">@param</span> threadFactory the factory to use when the executor</span></span><br><span class="line"><span class="comment">  *        creates a new thread</span></span><br><span class="line"><span class="comment">  * <span class="doctag">@param</span> handler the handler to use when execution is blocked</span></span><br><span class="line"><span class="comment">  *        because the thread bounds and queue capacities are reached</span></span><br><span class="line"><span class="comment">  */</span></span><br><span class="line"> <span class="function"><span class="keyword">public</span> <span class="title">ThreadPoolExecutor</span><span class="params">(<span class="keyword">int</span> corePoolSize,</span></span></span><br><span class="line"><span class="function"><span class="params">                           <span class="keyword">int</span> maximumPoolSize,</span></span></span><br><span class="line"><span class="function"><span class="params">                           <span class="keyword">long</span> keepAliveTime,</span></span></span><br><span class="line"><span class="function"><span class="params">                           TimeUnit unit,</span></span></span><br><span class="line"><span class="function"><span class="params">                           BlockingQueue&lt;Runnable&gt; workQueue,</span></span></span><br><span class="line"><span class="function"><span class="params">                           ThreadFactory threadFactory,</span></span></span><br><span class="line"><span class="function"><span class="params">                           RejectedExecutionHandler handler)</span> </span>&#123;</span><br><span class="line">     <span class="keyword">if</span> (corePoolSize &lt; <span class="number">0</span> ||</span><br><span class="line">         maximumPoolSize &lt;= <span class="number">0</span> ||</span><br><span class="line">         maximumPoolSize &lt; corePoolSize ||</span><br><span class="line">         keepAliveTime &lt; <span class="number">0</span>)</span><br><span class="line">         <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException();</span><br><span class="line">     <span class="keyword">if</span> (workQueue == <span class="keyword">null</span> || threadFactory == <span class="keyword">null</span> || handler == <span class="keyword">null</span>)</span><br><span class="line">         <span class="keyword">throw</span> <span class="keyword">new</span> NullPointerException();</span><br><span class="line">     <span class="keyword">this</span>.corePoolSize = corePoolSize;</span><br><span class="line">     <span class="keyword">this</span>.maximumPoolSize = maximumPoolSize;</span><br><span class="line">     <span class="keyword">this</span>.workQueue = workQueue;</span><br><span class="line">     <span class="keyword">this</span>.keepAliveTime = unit.toNanos(keepAliveTime);</span><br><span class="line">     <span class="keyword">this</span>.threadFactory = threadFactory;</span><br><span class="line">     <span class="keyword">this</span>.handler = handler;</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li><p>线程队列：</p>
-<p>线程池默认提供四个队列</p>
-<ul>
-<li>无界队列： 默认大小 int 最大值，因此可能会耗尽系统内存，引起OOM，非常危险。</li>
-<li>直接提交的队列 ： 没有容量，不会保存，直接创建新的线程，因此需要设置很大的线程池数。否则容易执行拒绝策略，也很危险。</li>
-<li>有界队列：如果core满了，则存储在队列中，如果core满了且队列满了，则创建线程，直到maximumPoolSize 到了，如果队列满了且最大线程数已经到了，则执行拒绝策略。</li>
-<li>优先级队列：按照优先级执行任务。也可以设置大小。</li>
-</ul>
-</li>
-<li><p>拒绝策略：</p>
-<p>jdk默认提供四种拒绝策略</p>
-<ul>
-<li>AbortPolicy ：直接抛出异常，阻止系统正常工作.</li>
-<li>CallerRunsPolicy : 只要线程池未关闭，该策略直接在调用者线程中，运行当前被丢弃的任务。显然这样做不会真的丢弃任务，但是，任务提交线程的性能极有可能会急剧下降。</li>
-<li>DiscardOldestPolicy: 该策略将丢弃最老的一个请求，也就是即将被执行的一个任务，并尝试再次提交当前任务.</li>
-<li>DiscardPolicy: 该策略默默地丢弃无法处理的任务，不予任何处理，如果允许任务丢失，我觉得这是最好的方案.</li>
-</ul>
-<p>注：可以自己实现拒绝策略，实现 RejectedExecutionHandler 接口，并重写 rejectedExecution 方法即可</p>
-</li>
-<li><p>线程工厂：</p>
-<p>需要修改线程工厂生产线程的细节，实现 ThreadFactory 接口，重写 newThread 方法即可。可以使用google 的 guaua 提供的 ThreadFactoryBuilder 工厂。可以自定义线程名称，是否守护，优先级，异常处理等等，功能强大。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">ThreadFactory threadFactory = <span class="keyword">new</span> ThreadFactoryBuilder().setNameFormat(<span class="string">"线程名称-%s"</span>).build();</span><br><span class="line"><span class="comment">// 创建一个线程对象</span></span><br><span class="line">Thread newThread = threadFactory.newThread(()-&gt;&#123;</span><br><span class="line">&#125;);</span><br><span class="line">System.out.println(newThread.getName());</span><br></pre></td></tr></table></figure>
-
-
-
-
-
-</li>
-</ul>
-<h4 id="如何扩展线程池"><a href="#如何扩展线程池" class="headerlink" title="如何扩展线程池"></a>如何扩展线程池</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ExtendThreadPoolDemo</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">ExtendThreadPool</span> <span class="keyword">implements</span> <span class="title">Runnable</span></span>&#123;</span><br><span class="line"></span><br><span class="line">        String name;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="title">ExtendThreadPool</span><span class="params">(String name)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">this</span>.name = name;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">            System.out</span><br><span class="line">                .println(<span class="string">"正在执行：Thread ID:"</span> + Thread.currentThread().getId() + <span class="string">", Task Name = "</span> + name);</span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                Thread.sleep(<span class="number">100</span>);</span><br><span class="line">            &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">                e.printStackTrace();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> InterruptedException </span>&#123;</span><br><span class="line">        <span class="comment">/**</span></span><br><span class="line"><span class="comment">         * 扩展线程池，重写 beforeExecute, afterExecute, terminated 方法，这三个方法默认是空的。</span></span><br><span class="line"><span class="comment">         * 可以监控每个线程任务执行的开始和结束时间，或者自定义一些增强。</span></span><br><span class="line"><span class="comment">         * 在 Worker 的 runWork 方法中，会调用这些方法</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">        ExecutorService e = <span class="keyword">new</span> ThreadPoolExecutor(<span class="number">5</span>, <span class="number">5</span>, <span class="number">0L</span>, TimeUnit.MILLISECONDS,</span><br><span class="line">            <span class="keyword">new</span> LinkedBlockingDeque&lt;&gt;())&#123;</span><br><span class="line">            </span><br><span class="line">            <span class="comment">//每个任务执行前后都会调用下面两个方法</span></span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">beforeExecute</span><span class="params">(Thread t, Runnable r)</span> </span>&#123;</span><br><span class="line">                System.out.println(<span class="string">"准备执行："</span> + ((ExtendThreadPool) r).name);</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">afterExecute</span><span class="params">(Runnable r, Throwable t)</span> </span>&#123;</span><br><span class="line">                System.out.println(<span class="string">"执行完成： "</span> + ((ExtendThreadPool) r).name);</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="comment">//在调用shutdown方法后会调用terminated方法</span></span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">terminated</span><span class="params">()</span> </span>&#123;</span><br><span class="line">                System.out.println(<span class="string">"线程池退出"</span>);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">4</span>; i++) &#123;</span><br><span class="line">            ExtendThreadPool extendThreadPool = <span class="keyword">new</span> ExtendThreadPool(<span class="string">"TASK-GEYM-"</span> + i);</span><br><span class="line">            e.execute(extendThreadPool);</span><br><span class="line">            Thread.sleep(<span class="number">10</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        e.shutdown();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h4 id="优化线程池异常信息"><a href="#优化线程池异常信息" class="headerlink" title="优化线程池异常信息"></a>优化线程池异常信息</h4><p>集成ThreadPoolExecutor类重写submit和execute方法，在提交线程时对异常进行封装即可</p>
-<h4 id="设计线程池中的线程数"><a href="#设计线程池中的线程数" class="headerlink" title="设计线程池中的线程数"></a>设计线程池中的线程数</h4><ul>
-<li>cpu密集型：线程数量=cpu核心数</li>
-<li>io密集型：线程数量=cpu核心数*2</li>
-</ul>
-<p>获取cpu核心数的方法：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Runtime.getRuntime().availableProcessors()；</span><br></pre></td></tr></table></figure>
-
-<h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4><p>线程池的参数规则：</p>
-<ol>
-<li>当线程池线程数&lt;核心线程数时，只要来任务就新建线程</li>
-<li>当线程池线程数&gt;核心线程数，且&lt;最大线程数时<ul>
-<li>阻塞队列未满：任务放在队列中，空闲线程到队列中获取任务</li>
-<li>阻塞队列满：创建新线程</li>
-</ul>
-</li>
-<li>当线程池线程数&gt;最大线程数时<ul>
-<li>阻塞队列未满：任务放在队列中，空闲线程到队列中获取任务</li>
-<li>阻塞队列满：使用handler采取拒绝策略</li>
-</ul>
-</li>
-</ol>
-<p><em>线程池构造</em></p>
-<p>在网上找到一张不错的图：原图出处：<a href="https://blog.csdn.net/Ch97CKd/article/details/80745137" target="_blank" rel="noopener">面试官常问的线程池，你真的了解吗？</a></p>
-<p><a href="https://ss.csdn.net/p?https://mmbiz.qpic.cn/mmbiz_png/WGyNiboAjLV6xcRusuqJvx5DsGCUBaNOExdwU6YXYDJaB0CjBvMtsLTYdvJYjfz7YFvGaf13PN44dVibiaNBKwomg/640?wx_fmt=png" target="_blank" rel="noopener"></a></p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/09/11/线程池的使用/">展开全文 >></a>
         </p>
       
 

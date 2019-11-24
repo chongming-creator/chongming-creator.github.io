@@ -6,19 +6,19 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>大数据学习-hive | ChongMing&#39;s blog</title>
+  <title>hive-数据定义 | ChongMing&#39;s blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="description" content="分布式和伪分布式分布式模式下，集群启动多个服务，JobTracker管理job，NameNode管理HDFS，TaskTracker管理每个工作节点上执行的job task，DataNode管理每个节点上存放的分布式文件系统中的文件数据块 下图展示了典型的分布式集群配置，其实伪分布式也差不多相同，它实际上是一个单节点的集群 可以将*.domain.pvt作为集群内外网DNS命名规范 用户可配置的一">
 <meta property="og:type" content="article">
-<meta property="og:title" content="大数据学习-hive">
-<meta property="og:url" content="http://yoursite.com/2019/10/07/hive-操作表/index.html">
+<meta property="og:title" content="hive-数据定义">
+<meta property="og:url" content="http://yoursite.com/2019/10/07/hive-数据定义/index.html">
 <meta property="og:site_name" content="ChongMing&#39;s blog">
 <meta property="og:description" content="分布式和伪分布式分布式模式下，集群启动多个服务，JobTracker管理job，NameNode管理HDFS，TaskTracker管理每个工作节点上执行的job task，DataNode管理每个节点上存放的分布式文件系统中的文件数据块 下图展示了典型的分布式集群配置，其实伪分布式也差不多相同，它实际上是一个单节点的集群 可以将*.domain.pvt作为集群内外网DNS命名规范 用户可配置的一">
 <meta property="og:locale" content="en">
 <meta property="og:image" content="https://i.loli.net/2019/11/03/RxcefhXHIwPGbmk.png">
-<meta property="og:updated_time" content="2019-11-03T13:44:16.602Z">
+<meta property="og:updated_time" content="2019-11-24T10:35:09.603Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="大数据学习-hive">
+<meta name="twitter:title" content="hive-数据定义">
 <meta name="twitter:description" content="分布式和伪分布式分布式模式下，集群启动多个服务，JobTracker管理job，NameNode管理HDFS，TaskTracker管理每个工作节点上执行的job task，DataNode管理每个节点上存放的分布式文件系统中的文件数据块 下图展示了典型的分布式集群配置，其实伪分布式也差不多相同，它实际上是一个单节点的集群 可以将*.domain.pvt作为集群内外网DNS命名规范 用户可配置的一">
 <meta name="twitter:image" content="https://i.loli.net/2019/11/03/RxcefhXHIwPGbmk.png">
   
@@ -156,19 +156,19 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            <article id="post-hive-操作表" class="article article-type-post " itemscope itemprop="blogPost">
+            <article id="post-hive-数据定义" class="article article-type-post " itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 class="article-title" itemprop="name">
-      大数据学习-hive
+      hive-数据定义
     </h1>
   
 
         
-        <a href="/2019/10/07/hive-操作表/" class="archive-article-date">
+        <a href="/2019/10/07/hive-数据定义/" class="archive-article-date">
   	<time datetime="2019-10-07T08:19:45.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-10-07</time>
 </a>
         
@@ -276,13 +276,8 @@
 <li>缺点：然而破坏标准格式会增加数据冗余的风险，从而导致消耗不必要的磁盘空间，还有可能导致数据不一致，当数据发生改变时冗余的数据可能存在无法进行同步的风险</li>
 </ol>
 <p><strong>示例</strong></p>
-<p>create table employees(</p>
-<p>​    name string,</p>
-<p>​    salary float,</p>
-<p>​    subordinates array<string>,</string></p>
-<p>​    deductions map&lt;string, float&gt;,  </p>
-<p>​    address struct&lt;street:string, city:string, state:string, zip:int&gt;</p>
-<p>)</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">create</span> <span class="keyword">table</span> employees(</span><br><span class="line"> <span class="keyword">name</span> <span class="keyword">STRING</span>,</span><br><span class="line"> salary <span class="built_in">float</span>,</span><br><span class="line"> subordinates <span class="built_in">array</span>&lt;<span class="keyword">STRING</span>&gt;,</span><br><span class="line"> deductions <span class="keyword">map</span>&lt;<span class="keyword">STRING</span>, <span class="built_in">float</span>&gt;,  </span><br><span class="line"> address <span class="keyword">struct</span>&lt;street:<span class="keyword">STRING</span>, city:<span class="keyword">STRING</span>, state:<span class="keyword">STRING</span>, zip:<span class="built_in">int</span>&gt;</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+
 <ol>
 <li>subordinates下属员工列表是一个字符串数组</li>
 <li>deductions是一个键值对构成的map，记录每一次扣除的余额</li>
@@ -333,7 +328,7 @@
 <p>alter database可以为数据库设置键值对来描述数据库属性信息（数据库的其他元数据信息都不可更改，包括库名和所在目录）</p>
 <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">alter</span> <span class="keyword">database</span> <span class="keyword">test</span> <span class="keyword">set</span> dbproperties(<span class="string">'edited-by'</span>=<span class="string">'chongming'</span>)</span><br></pre></td></tr></table></figure>
 
-<h3 id="数据表"><a href="#数据表" class="headerlink" title="数据表"></a>数据表</h3><h4 id="创建表"><a href="#创建表" class="headerlink" title="创建表"></a>创建表</h4><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">create</span> <span class="keyword">table</span> <span class="keyword">if</span> <span class="keyword">not</span> <span class="keyword">exists</span> mydb.employees(</span><br><span class="line">	<span class="keyword">name</span> <span class="keyword">string</span> <span class="keyword">comment</span> <span class="string">'employee name'</span>,</span><br><span class="line">	salary <span class="built_in">float</span> <span class="keyword">comment</span> <span class="string">'employee salary'</span>,</span><br><span class="line">	subordinates <span class="built_in">array</span>&lt;<span class="keyword">string</span>&gt; <span class="keyword">comment</span> <span class="string">'names of subordinates'</span>,</span><br><span class="line">	deductions <span class="keyword">map</span>&lt;<span class="keyword">string</span>, <span class="built_in">float</span>&gt; <span class="keyword">comment</span> <span class="string">'keys are deductions names, values are percentages'</span>,</span><br><span class="line">	address <span class="keyword">struct</span>&lt;street:<span class="keyword">string</span>, city:<span class="keyword">string</span>, state:<span class="keyword">string</span>, zip:<span class="built_in">int</span>&gt; <span class="keyword">comment</span> <span class="string">'home address'</span></span><br><span class="line">)</span><br><span class="line"><span class="keyword">comment</span> <span class="string">'description of the table'</span></span><br><span class="line">tblproperties (<span class="string">'creator'</span>=<span class="string">'chongming'</span>, <span class="string">'created_at'</span>=<span class="string">'2019-11-03 10:00:00'</span>)</span><br><span class="line">location <span class="string">'/user/hive/warehouse/mydb.db/employees'</span>;</span><br></pre></td></tr></table></figure>
+<h3 id="数据表"><a href="#数据表" class="headerlink" title="数据表"></a>数据表</h3><h4 id="创建表"><a href="#创建表" class="headerlink" title="创建表"></a>创建表</h4><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">create</span> <span class="keyword">table</span> <span class="keyword">if</span> <span class="keyword">not</span> <span class="keyword">exists</span> mydb.employees(</span><br><span class="line">	<span class="keyword">name</span> <span class="keyword">STRING</span> <span class="keyword">comment</span> <span class="string">'employee name'</span>,</span><br><span class="line">	salary <span class="built_in">float</span> <span class="keyword">comment</span> <span class="string">'employee salary'</span>,</span><br><span class="line">	subordinates <span class="built_in">array</span>&lt;<span class="keyword">STRING</span>&gt; <span class="keyword">comment</span> <span class="string">'names of subordinates'</span>,</span><br><span class="line">	deductions <span class="keyword">map</span>&lt;<span class="keyword">STRING</span>, <span class="built_in">float</span>&gt; <span class="keyword">comment</span> <span class="string">'keys are deductions names, values are percentages'</span>,</span><br><span class="line">	address <span class="keyword">struct</span>&lt;street:<span class="keyword">STRING</span>, city:<span class="keyword">STRING</span>, state:<span class="keyword">STRING</span>, zip:<span class="built_in">int</span>&gt; <span class="keyword">comment</span> <span class="string">'home address'</span></span><br><span class="line">)</span><br><span class="line"><span class="keyword">comment</span> <span class="string">'description of the table'</span></span><br><span class="line">tblproperties (<span class="string">'creator'</span>=<span class="string">'chongming'</span>, <span class="string">'created_at'</span>=<span class="string">'2019-11-03 10:00:00'</span>)</span><br><span class="line">location <span class="string">'/user/hive/warehouse/mydb.db/employees'</span>;</span><br></pre></td></tr></table></figure>
 
 <p>值得注意的是，用户这里用if not exists，如果已经存在同名表但指定的模式不同，hive是会忽略掉这个差异的。</p>
 <p>用户可以拷贝一张已存在的表的表模式</p>
@@ -352,6 +347,76 @@
 <p>我们可以使用extended来查看表的详细结构信息</p>
 <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">describe</span> <span class="keyword">extended</span> test.employees</span><br></pre></td></tr></table></figure>
 
+<p><strong>管理表</strong></p>
+<p>我们目前所创建的表都成为管理表（或者内部表），hive默认会将管理表放在配置项hive.metastore.warehouse.dir定义的目录的子目录下，删除表时数据也会随之删除</p>
+<p>但是管理表不方便和其他工作共享数据，这时我们通常使用外部表</p>
+<p><strong>外部表</strong></p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">create</span> <span class="keyword">external</span> <span class="keyword">table</span> <span class="keyword">if</span> <span class="keyword">not</span> <span class="keyword">exists</span> stocks(</span><br><span class="line">  <span class="keyword">exchange</span> <span class="keyword">STRING</span>,</span><br><span class="line">  symbol <span class="keyword">STRING</span>,</span><br><span class="line">  ymd <span class="keyword">STRING</span></span><br><span class="line">  ...</span><br><span class="line">)</span><br><span class="line"><span class="keyword">row</span> <span class="keyword">format</span> <span class="keyword">delimited</span> <span class="keyword">fields</span> <span class="keyword">terminated</span> <span class="keyword">by</span> <span class="string">','</span></span><br><span class="line">location <span class="string">'/data/stocks'</span>;</span><br></pre></td></tr></table></figure>
+
+<p>external告诉hive这是一张外部表，location表明hive数据实际落在哪个目录下</p>
+<p>删除该表不会删除数据，只会删除表的元数据信息</p>
+<p>对于管理表，用户还可以对一张存在的表的表结构进行复制</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">create</span> <span class="keyword">external</span> <span class="keyword">table</span> <span class="keyword">if</span> <span class="keyword">not</span> <span class="keyword">exists</span> mydb.employees3 </span><br><span class="line"><span class="keyword">like</span> mydb.employees</span><br><span class="line">location <span class="string">'/path/to/data'</span>;</span><br></pre></td></tr></table></figure>
+
+<p><strong>分区表</strong></p>
+<p>数据分区的概念存在已久，可以有多种形式，通常使用分区来水平分散压力，将数据从物理上转移到和使用最频繁的用户更近的地方，对数据进行分区，最重要的是查询优化</p>
+<p>例如存在员工表：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">create</span> <span class="keyword">table</span> employees(</span><br><span class="line">  <span class="keyword">name</span> <span class="keyword">STRING</span>,</span><br><span class="line">  salary <span class="built_in">FLOAT</span>,</span><br><span class="line">  subordinates <span class="built_in">ARRAY</span>&lt;<span class="keyword">STRING</span>&gt;,</span><br><span class="line">  deductions <span class="keyword">MAP</span>&lt;<span class="keyword">STRING</span>, <span class="built_in">FLOAT</span>&gt;,</span><br><span class="line">  address <span class="keyword">STRUCT</span>&lt;street:<span class="keyword">STRING</span>, city:<span class="keyword">STRING</span>, state:<span class="keyword">STRING</span>, zip:<span class="built_in">INT</span>&gt;</span><br><span class="line">)</span><br><span class="line">PARTITIONED <span class="keyword">BY</span> (country <span class="keyword">STRING</span>, state <span class="keyword">STRING</span>);</span><br></pre></td></tr></table></figure>
+
+<p>分区表改变了hive对数据存储的组织方式假设我们在mydb库中创建的表，则会产生目录：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hdfs://master_server/user/hive/warehouse/mydb.db/employees</span><br></pre></td></tr></table></figure>
+
+<p>由于我们对employees表进行分区，则会产生对应分区的子目录：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">...</span><br><span class="line">.../employees/country=CA/state=AB</span><br><span class="line">.../employees/country=CA/state=BC</span><br><span class="line">.../employees/country=US/state=AL</span><br><span class="line">.../employees/country=US/state=AK</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+
+<p>当我们在where子句中增加谓词来按照分区值进行过滤时，这些谓词被称为分区过滤器</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> * <span class="keyword">from</span> employees <span class="keyword">where</span> country = <span class="string">'US'</span> <span class="keyword">and</span> state = <span class="string">'IL'</span>;</span><br></pre></td></tr></table></figure>
+
+<p>hive可以设置严格模式来禁止不加分区的查询语句</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">set hive.mapred.mode=strict</span><br></pre></td></tr></table></figure>
+
+<p>用户可以通过show partitions命令来查看表中存在的所有分区</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">show</span> <span class="keyword">partitions</span> employees</span><br></pre></td></tr></table></figure>
+
+<p>也可以查看特定分区键下的分区</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">show</span> <span class="keyword">partitions</span> employees <span class="keyword">partition</span>(country=<span class="string">'US'</span>)</span><br></pre></td></tr></table></figure>
+
+<p><strong>外部分区表</strong></p>
+<p>外部表也可以使用分区。在定义外部表时，必须定义一个LOCATION子句的数据文件目录，而对于外部分区表，不需要定义这个LOCATION子句，有一个ALTER TABLE XX ADD PARTITION ….LOCATION….语句在添加分区时定义这个分区的数据文件的目录。</p>
+<p>例如：日志文件分析</p>
+<p>日志标准信息：时间戳、严重程度（ERROR、WARNING、INFO）、服务器名称、进程ID、备注（一个通用文本信息）</p>
+<p>可以按照如下方式定义表：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">create</span> <span class="keyword">external</span> <span class="keyword">table</span> <span class="keyword">if</span> <span class="keyword">not</span> <span class="keyword">exists</span> log_messages(</span><br><span class="line">	hms <span class="built_in">int</span>,</span><br><span class="line">	serverity <span class="keyword">String</span>,</span><br><span class="line">	<span class="keyword">server</span> <span class="keyword">String</span>,</span><br><span class="line">	process_id <span class="built_in">int</span>,</span><br><span class="line">	message <span class="keyword">String</span></span><br><span class="line">)</span><br><span class="line">partitioned <span class="keyword">by</span> (<span class="keyword">year</span> <span class="built_in">int</span>, <span class="keyword">month</span> <span class="built_in">int</span>, <span class="keyword">day</span> <span class="built_in">int</span>)</span><br><span class="line"><span class="keyword">row</span> <span class="keyword">format</span> <span class="keyword">delimited</span> <span class="keyword">fields</span> <span class="keyword">terminated</span> <span class="keyword">by</span> <span class="string">'\t'</span>;</span><br></pre></td></tr></table></figure>
+
+<p>按照年月日对表进行分区，时分秒这些细化的信息存在hms字段，字段之间用制表符分隔</p>
+<p>可以删除掉分区，但是分区对应的数据不受影响，因为这是外部表的一个分区指向到了数据的路径</p>
+<p>（ps：hive不关心一个分区对应的目录下有没有文件，如果不存在目录或没有对应文件，则查询时没有返回结果）</p>
+<h4 id="删除表"><a href="#删除表" class="headerlink" title="删除表"></a>删除表</h4><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">DROP</span> <span class="keyword">TABLE</span> <span class="keyword">IF</span> <span class="keyword">EXISTS</span> employees;</span><br></pre></td></tr></table></figure>
+
+<p>对于管理表，表的元数据信息和表内数据都会被删除</p>
+<p>如果用户开启Hadoop回收站功能，那么数据会被移动到用户在分布式文件系统中的用户根目录下的.Trash目录下，也就是HDFS中的/user/$USER/.Trash目录</p>
+<p>如果用户误删表，那么可以先重建表和分区，再去.Trash目录中把误删的文件移动到正确的文件目录下</p>
+<h4 id="表重命名"><a href="#表重命名" class="headerlink" title="表重命名"></a>表重命名</h4><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">alter</span> <span class="keyword">table</span> log_messages <span class="keyword">rename</span> <span class="keyword">to</span> logmsgs;</span><br></pre></td></tr></table></figure>
+
+<h4 id="增加、修改、删除表分区"><a href="#增加、修改、删除表分区" class="headerlink" title="增加、修改、删除表分区"></a>增加、修改、删除表分区</h4><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">alter</span> <span class="keyword">table</span> log_messages <span class="keyword">add</span> <span class="keyword">if</span> <span class="keyword">not</span> <span class="keyword">exists</span></span><br><span class="line"><span class="keyword">partition</span> (<span class="keyword">year</span> = <span class="number">2011</span>, <span class="keyword">month</span> = <span class="number">1</span>, <span class="keyword">day</span> = <span class="number">1</span>) location <span class="string">'/logs/2011/01/01'</span></span><br><span class="line"><span class="keyword">partition</span> (<span class="keyword">year</span> = <span class="number">2011</span>, <span class="keyword">month</span> = <span class="number">1</span>, <span class="keyword">day</span> = <span class="number">2</span>) location <span class="string">'/logs/2011/01/02'</span></span><br><span class="line">...;</span><br></pre></td></tr></table></figure>
+
+<p>使用0.8之后的hive版本，在同一个查询中可以增加多个分区语句</p>
+<p>可以通过移动位置来修改分区路径</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">alter</span> <span class="keyword">table</span> log_messages <span class="keyword">partition</span>(<span class="keyword">year</span> = <span class="number">2011</span>, <span class="keyword">month</span> = <span class="number">12</span>, <span class="keyword">day</span> = <span class="number">2</span>) </span><br><span class="line"><span class="keyword">set</span> location <span class="string">'s3n://ourbucket/logs/2011/01/02'</span>;</span><br></pre></td></tr></table></figure>
+
+<p>该命令不会将数据从旧的路径转走，也不会删除旧的数据</p>
+<p>可以删除分区：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">alter</span> <span class="keyword">table</span> log_messages <span class="keyword">drop</span> <span class="keyword">if</span> <span class="keyword">exists</span> <span class="keyword">partition</span>(<span class="keyword">year</span> = <span class="number">2011</span>, <span class="keyword">month</span> = <span class="number">12</span>, <span class="keyword">day</span> = <span class="number">2</span>);</span><br></pre></td></tr></table></figure>
+
+<p>对于管理表，分区内数据会和元数据信息一起被删除，外部表不会删除数据</p>
+<h4 id="修改列"><a href="#修改列" class="headerlink" title="修改列"></a>修改列</h4><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">alter</span> <span class="keyword">table</span> log_messages</span><br><span class="line"><span class="keyword">change</span> <span class="keyword">column</span> hms hours_minutes_seconds <span class="built_in">int</span></span><br><span class="line"><span class="keyword">comment</span> <span class="string">'...'</span></span><br><span class="line"><span class="keyword">after</span> serverity;</span><br></pre></td></tr></table></figure>
+
+<p>即使字段名或者类型不改变，也需要完全指定旧的字段名并给出新的字段名以及类型</p>
+<p>after用于移动字段，用法同关系型数据库</p>
+<h4 id="删除或者替换列"><a href="#删除或者替换列" class="headerlink" title="删除或者替换列"></a>删除或者替换列</h4><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">alter</span> <span class="keyword">table</span> log_messages <span class="keyword">replace</span> <span class="keyword">columns</span> (</span><br><span class="line">	hours_mins_secs <span class="built_in">int</span> <span class="keyword">comment</span> <span class="string">'时分秒'</span>,</span><br><span class="line">	severity <span class="keyword">String</span> <span class="keyword">comment</span> <span class="string">'服务名'</span>,</span><br><span class="line">	message <span class="keyword">String</span> <span class="keyword">comment</span> <span class="string">'备注信息'</span></span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+
+<p>该语句重命名了hms字段并从之前的表定义模式中移除了字段server和process_id</p>
+<p>alter语句只改变了表的元数据信息</p>
 
       
 
@@ -410,7 +475,7 @@
     <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
     <p>扫一扫，分享到微信</p>
     <div class="wx-qrcode">
-      <img src="//pan.baidu.com/share/qrcode?url=http://yoursite.com/2019/10/07/hive-操作表/" alt="微信分享二维码">
+      <img src="//pan.baidu.com/share/qrcode?url=http://yoursite.com/2019/10/07/hive-数据定义/" alt="微信分享二维码">
     </div>
 </div>
 
@@ -423,6 +488,15 @@
 
   
 <nav id="article-nav">
+  
+    <a href="/2019/11/24/hive-性能调优/" id="article-nav-newer" class="article-nav-link-wrap">
+      <i class="icon-circle-left"></i>
+      <div class="article-nav-title">
+        
+          hive-性能调优
+        
+      </div>
+    </a>
   
   
     <a href="/2019/09/16/jvm学习笔记/" id="article-nav-older" class="article-nav-link-wrap">
